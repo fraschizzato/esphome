@@ -51,8 +51,8 @@ void MideaAC::on_frame(const midea_dongle::Frame &frame) {
     this->night = p.get_sleep_mode();
     need_publish = true;
   }
-  if (this->eco != p.get_eco_mode()) {
-    this->eco = p.get_eco_mode();
+  if (this->eco != p.get_nofrost_mode()) {
+    this->eco = p.get_nofrost_mode();
     need_publish = true;
   }
   if (need_publish)
@@ -102,7 +102,7 @@ void MideaAC::control(const climate::ClimateCall &call) {
     this->ctrl_request_ = true;
   }
   if (call.get_eco().has_value() && call.get_eco().value() != this->eco) {
-    this->cmd_frame_.set_eco_mode(call.get_eco().value());
+    this->cmd_frame_.set_nofrost_mode(call.get_eco().value());
     this->ctrl_request_ = true;
   }
 }
