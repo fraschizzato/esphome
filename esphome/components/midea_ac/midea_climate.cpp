@@ -42,6 +42,19 @@ void MideaAC::on_frame(const midea_dongle::Frame &frame) {
     this->swing_mode = p.get_swing_mode();
     need_publish = true;
   }
+  if (this->boost != p.get_turbo_mode()) {
+    ESP_LOGD(TAG, "TURBO");
+    this->boost = p.get_turbo_mode();
+    need_publish = true;
+  }
+  if (this->night != p.get_sleep_mode()) {
+    this->night = p.get_sleep_mode();
+    need_publish = true;
+  }
+  if (this->eco != p.get_eco_mode()) {
+    this->eco = p.get_eco_mode();
+    need_publish = true;
+  }
   if (need_publish)
     this->publish_state();
   if (this->outdoor_sensor_ != nullptr &&
@@ -80,7 +93,20 @@ void MideaAC::control(const climate::ClimateCall &call) {
     this->cmd_frame_.set_beeper_feedback(this->beeper_feedback_);
     this->cmd_frame_.finalize();
   }
+  if (call.get_boost().has_value() && call.get_boost().value() != this->boost) {
+    this->cmd_frame_.set_turbo_mode(call.get_boost().value());
+    this->ctrl_request_ = true;
+  }
+  if (call.get_night().has_value() && call.get_night().value() != this->night) {
+    this->cmd_frame_.set_sleep_mode(call.get_night().value());
+    this->ctrl_request_ = true;
+  }
+  if (call.get_eco().has_value() && call.get_eco().value() != this->eco) {
+    this->cmd_frame_.set_eco_mode(call.get_eco().value());
+    this->ctrl_request_ = true;
+  }
 }
+
 
 climate::ClimateTraits MideaAC::traits() {
   auto traits = climate::ClimateTraits();
@@ -99,6 +125,9 @@ climate::ClimateTraits MideaAC::traits() {
   traits.set_supports_swing_mode_off(true);
   traits.set_supports_swing_mode_vertical(true);
   traits.set_supports_current_temperature(true);
+  traits.set_supports_boost(this->supports_boost_);
+  traits.set_supports_night(this->supports_night_);
+  traits.set_supports_eco(this->supports_eco_);
   return traits;
 }
 

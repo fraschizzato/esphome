@@ -1,8 +1,9 @@
-from esphome.components import climate, sensor
-import esphome.config_validation as cv
 import esphome.codegen as cg
-from esphome.const import CONF_ID, UNIT_CELSIUS, ICON_THERMOMETER, CONF_BOOST, CONF_SLEEP
+import esphome.config_validation as cv
+from esphome.components import climate, sensor
 from esphome.components.midea_dongle import CONF_MIDEA_DONGLE_ID, MideaDongle
+from esphome.const import (CONF_BOOST, CONF_ECO, CONF_ID, CONF_SLEEP,
+                           ICON_THERMOMETER, UNIT_CELSIUS)
 
 DEPENDENCIES = ['midea_dongle']
 AUTO_LOAD = ['climate', 'sensor']
@@ -18,6 +19,7 @@ CONFIG_SCHEMA = cv.All(climate.CLIMATE_SCHEMA.extend({
     cv.GenerateID(CONF_MIDEA_DONGLE_ID): cv.use_id(MideaDongle),
     cv.Optional(CONF_BEEPER): cv.boolean,
     cv.Optional(CONF_BOOST): cv.boolean,
+    cv.Optional(CONF_ECO): cv.boolean,
     cv.Optional(CONF_SLEEP): cv.boolean,
     cv.Optional(CONF_OUTDOOR_TEMPERATURE): sensor.sensor_schema(UNIT_CELSIUS, ICON_THERMOMETER, 0),
 }).extend(cv.COMPONENT_SCHEMA))
@@ -34,3 +36,9 @@ def to_code(config):
     if CONF_OUTDOOR_TEMPERATURE in config:
         sens = yield sensor.new_sensor(config[CONF_OUTDOOR_TEMPERATURE])
         cg.add(var.set_outdoor_temperature_sensor(sens))
+    if CONF_BOOST in config:
+        cg.add(var.set_supports_boost(config[CONF_BOOST]))
+    if CONF_SLEEP in config:
+        cg.add(var.set_supports_night(config[CONF_SLEEP]))
+    if CONF_ECO in config:
+        cg.add(var.set_supports_eco(config[CONF_ECO]))

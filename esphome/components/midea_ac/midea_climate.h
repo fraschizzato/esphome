@@ -18,7 +18,9 @@ class MideaAC : public midea_dongle::MideaAppliance, public climate::Climate, pu
   void set_midea_dongle_parent(midea_dongle::MideaDongle *parent) { this->parent_ = parent; }
   void set_outdoor_temperature_sensor(sensor::Sensor *sensor) { this->outdoor_sensor_ = sensor; }
   void set_beeper_feedback(bool state) { this->beeper_feedback_ = state; }
-  
+  void set_supports_boost(bool supports_boost) { this->supports_boost_ = supports_boost; };
+  void set_supports_eco(bool supports_eco) { this->supports_eco_ = supports_eco; };
+  void set_supports_night(bool supports_night) { this->supports_night_ = supports_night; };
 
  protected:
   /// Override control to change settings of the climate device.
@@ -32,6 +34,10 @@ class MideaAC : public midea_dongle::MideaAppliance, public climate::Climate, pu
   bool beeper_feedback_{false};
   midea_dongle::MideaDongle *parent_{nullptr};
   sensor::Sensor *outdoor_sensor_{nullptr};
+
+  bool supports_boost_{false};
+  bool supports_night_{false};
+  bool supports_eco_{false};
 };
 
 }  // namespace midea_ac
