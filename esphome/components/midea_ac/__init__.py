@@ -39,6 +39,6 @@ def to_code(config):
     if CONF_BOOST in config:
         cg.add(var.set_supports_boost(config[CONF_BOOST]))
     if CONF_SLEEP in config:
-        cg.add(var.set_supports_night(config[CONF_SLEEP]))
+        cg.add(var.set_supports_sleep_(config[CONF_SLEEP]))
     if CONF_ECO in config:
         cg.add(var.set_supports_eco(config[CONF_ECO]))

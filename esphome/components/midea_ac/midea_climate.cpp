@@ -47,8 +47,8 @@ void MideaAC::on_frame(const midea_dongle::Frame &frame) {
     this->boost = p.get_turbo_mode();
     need_publish = true;
   }
-  if (this->night != p.get_sleep_mode()) {
-    this->night = p.get_sleep_mode();
+  if (this->sleep_ != p.get_sleep_mode()) {
+    this->sleep_ = p.get_sleep_mode();
     need_publish = true;
   }
   if (this->eco != p.get_nofrost_mode()) {
@@ -97,8 +97,8 @@ void MideaAC::control(const climate::ClimateCall &call) {
     this->cmd_frame_.set_turbo_mode(call.get_boost().value());
     this->ctrl_request_ = true;
   }
-  if (call.get_night().has_value() && call.get_night().value() != this->night) {
-    this->cmd_frame_.set_sleep_mode(call.get_night().value());
+  if (call.get_sleep_().has_value() && call.get_sleep_().value() != this->sleep_) {
+    this->cmd_frame_.set_sleep_mode(call.get_sleep_().value());
     this->ctrl_request_ = true;
   }
   if (call.get_eco().has_value() && call.get_eco().value() != this->eco) {
@@ -126,7 +126,7 @@ climate::ClimateTraits MideaAC::traits() {
   traits.set_supports_swing_mode_vertical(true);
   traits.set_supports_current_temperature(true);
   traits.set_supports_boost(this->supports_boost_);
-  traits.set_supports_night(this->supports_night_);
+  traits.set_supports_sleep_(this->supports_sleep__);
   traits.set_supports_eco(this->supports_eco_);
   return traits;
 }
